@@ -1,9 +1,11 @@
+import type { FormEvent } from "react";
 import { WhiteCard } from "../../components";
 import { useWeddingBoundStore } from "../../stores/wedding";
 
 export const WeddingInvitationPage = () => {
   const firstName = useWeddingBoundStore((state) => state.firstName);
   const lastName = useWeddingBoundStore((state) => state.lastName);
+
   const setFirstName = useWeddingBoundStore((state) => state.setFirstName);
   const setLastName = useWeddingBoundStore((state) => state.setLastName);
 
@@ -13,7 +15,24 @@ export const WeddingInvitationPage = () => {
   const eventDate = useWeddingBoundStore((state) => state.eventDate);
   const eventYYYYMMDD = useWeddingBoundStore((state) => state.eventYYYYMMDD());
   const eventHHMM = useWeddingBoundStore((state) => state.eventHHMM());
+
   const setEventDate = useWeddingBoundStore((state) => state.setEventDate);
+  const setEventTime = useWeddingBoundStore((state) => state.setEventTime);
+
+  const isConfirmed = useWeddingBoundStore((state) => state.isConfirmed);
+  const setConfirmation = useWeddingBoundStore((state) => state.setIsConfirmed);
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    console.log({
+      firstName,
+      lastName,
+      guestCount,
+      eventDate,
+      isConfirmed,
+    });
+  };
 
   return (
     <>
@@ -23,7 +42,7 @@ export const WeddingInvitationPage = () => {
 
       <WhiteCard className="flex items-center justify-center p-12">
         <div className="mx-auto w-full max-w-[550px]">
-          <form action="https://formbold.com/s/FORM_ID" method="POST">
+          <form onSubmit={onSubmit}>
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
@@ -97,6 +116,7 @@ export const WeddingInvitationPage = () => {
                     name="eventTime"
                     id="eventTime"
                     value={eventHHMM}
+                    onChange={(e) => setEventTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -113,6 +133,8 @@ export const WeddingInvitationPage = () => {
                     name="isComing"
                     id="radioButton1"
                     className="h-5 w-5"
+                    checked={isConfirmed}
+                    onChange={() => setConfirmation(true)}
                   />
                   <label className="pl-3 text-base font-medium text-[#07074D]">
                     Si
@@ -124,6 +146,8 @@ export const WeddingInvitationPage = () => {
                     name="isComing"
                     id="radioButton2"
                     className="h-5 w-5"
+                    checked={!isConfirmed}
+                    onChange={() => setConfirmation(false)}
                   />
                   <label className="pl-3 text-base font-medium text-[#07074D]">
                     No
