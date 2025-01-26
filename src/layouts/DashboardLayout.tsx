@@ -1,7 +1,20 @@
-import { SideMenu } from '../components';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from "react-router-dom";
+import { SideMenu } from "../components";
+import { useAuthStore } from "../stores/auth/auth.store";
 
-export const DashboardLayout = () => {
+export function DashboardLayout() {
+  const authState = useAuthStore((state) => state.status);
+  const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
+
+  if (authState === "pending") {
+    checkAuthStatus();
+    return <div>Loading...</div>;
+  }
+
+  if (authState === "unauthorized") {
+    return <Navigate to="/auth/login" />;
+  }
+
   return (
     <div className="bg-slate-200 overflow-y-scroll w-screen h-screen antialiased text-slate-900 selection:bg-blue-900 selection:text-white">
       <div className="flex flex-row relative w-screen">
@@ -10,9 +23,7 @@ export const DashboardLayout = () => {
         <div className="w-full p-4">
           <Outlet />
         </div>
-
       </div>
-
     </div>
   );
-};
+}
